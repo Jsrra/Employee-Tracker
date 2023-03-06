@@ -13,6 +13,9 @@ function promptQuestion() {
                 case `View all employees`:
                     console.log(`View all employees selected`);
                     // get employee table 
+                    db.query(`SELECT * FROM employee`, function (err, results) {
+                        console.log(results);
+                    })
                     break;
                 case `Add Employee`:
                     console.log(`Add employee Selected`);
@@ -33,6 +36,9 @@ function promptQuestion() {
                 case `View all departments`:
                     console.log(`View all departments selected`);
                     // get departments table
+                    db.query(`SELECT * FROM department`, function (err, results) {
+                        console.log(results);
+                    })
                     break;
                 case ` Add department`:
                     console.log(` Add department selected`);
