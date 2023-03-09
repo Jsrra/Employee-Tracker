@@ -4,4 +4,5 @@ VALUES  (1, "Marketing"),
         (3, "Customer Service"),
         (4, "HR");
 
-INSERT INTO role ()
+-- INSERT INTO role (id, title, salary)
+-- VALUES (1, )

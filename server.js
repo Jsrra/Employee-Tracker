@@ -1,42 +1,16 @@
-const express = require('express');
-const mysql = require('mysql2');
+
+const db = require("./db/connection")
 const inquirer = require(`inquirer`)
 const logo = require('asciiart-logo');
-const cTable = require('console.table');
-
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+require('console.table');
 
 // Connect to database
-const db = mysql.createConnection(
-    {
-        host: '127.0.0.1',
-        // MySQL username,
-        user: 'root',
-        // MySQL password
-        password: 'root',
-        database: 'employees_db'
-    },
-    console.log(`Connected to the employees_db database.`)
-);
+
 
 // Query database
-db.query('SELECT * FROM students', function (err, results) {
-    console.log(results);
-});
-
-// Default response for any other request (Not Found)
-app.use((req, res) => {
-    res.status(404).end();
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// db.query('SELECT * FROM students', function (err, results) {
+//     console.log(results,"HEREEEEEEEEEEE");
+// });
 
 function promptQuestion() {
     inquirer.prompt([{
@@ -77,13 +51,14 @@ function promptQuestion() {
                     // insert role to role table
                     break;
                 case `View all departments`:
-                    console.log(`View all departments selected`);
+                    //console.log(`View all departments selected`);
                     // get departments table
                     db.query(`SELECT * FROM department`, function (err, results) {
-                        console.log(results);
+                        console.table(results);
+                        promptQuestion();
                     })
                     break;
-                case ` Add department`:
+                case `Add department`:
                     console.log(` Add department selected`);
                     addDepartmentQuestion();
                     // console.table(employee)
@@ -133,9 +108,18 @@ function addEmployeeQuestions() {
 function addDepartmentQuestion() {
     inquirer.prompt([{
         type: `input`,
-        name: `departmentName`,
+        name: `department_name`,
         message: `What is the name of the Department?`
-    }])
+    }]).then(function (answer) {
+        db.promise().query('INSERT INTO department set ?', answer)
+            .then(function () {
+                console.table("department has been added!");
+
+                promptQuestion();
+            }).catch(function (err) {
+                if (err) throw err;
+            })
+    })
 }
 
 function addRoleQuestions() {
